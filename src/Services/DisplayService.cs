@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using BSDDisplayControl.Services.Interfaces;
 using System.Diagnostics;
 using System;
+using System.Text.Json;
 
 
 namespace BSDisplayControl.Services;
@@ -12,7 +13,7 @@ public class DisplayService : IDisplayService
     /// Gets the display information.
     /// </summary>
     /// <returns>A task that represents the asynchronous operation, containing the display information.</returns>
-    public async Task<(string, string)> GetDisplayInfo()
+    public async Task<(string[], string)> GetDisplayInfo()
     {
 
         var scriptPath = System.IO.Path.Combine(
@@ -63,9 +64,29 @@ public class DisplayService : IDisplayService
         string pythonError = await pythonProcess.StandardError.ReadToEndAsync();
         await pythonProcess.WaitForExitAsync();
 
-        var res1 = string.IsNullOrWhiteSpace(pythonOutput) ? pythonError : pythonOutput;
-        var res2 = string.IsNullOrWhiteSpace(temp) ? temp : error;
-        return (res1, temp);
+
+        string[] displayNames = [];
+        string verboseDisplayDetails;
+
+        if (!string.IsNullOrWhiteSpace(pythonOutput))
+        {
+            displayNames = JsonSerializer.Deserialize<string[]>(pythonOutput);
+        }
+        else
+        {
+            throw new InvalidOperationException("Failed to retrieve display names from the Python script.");
+        }
+
+        if (!string.IsNullOrWhiteSpace(temp))
+        {
+            verboseDisplayDetails = temp;
+        }
+        else
+        {
+            verboseDisplayDetails = error;
+        }
+
+        return (displayNames, verboseDisplayDetails);
 
     }
 }

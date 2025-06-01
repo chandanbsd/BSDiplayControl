@@ -14,25 +14,31 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-    <!-- <StackPanel>
-        <ItemsControl Items="{Binding CommandOutput}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBox Text="{Binding .}" Margin="4"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </StackPanel> -->
 
     <TabControl Margin="5">
-        <TabItem Header="Tab 1">
-            <TextBlock Text="{Binding CommandOutput}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TabItem Header="Brightness Control">
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding CommandOutput}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding .}" Margin="4" IsReadOnly="True"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
         </TabItem>
         <TabItem Header="Display Details">
             <TextBlock Text="{Binding FullDisplayInfo}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </TabItem>
-        <TabItem Header="Tab 3">
-            <TextBlock Margin="5">This is tab 3 content</TextBlock>
+        <TabItem Header="About">
+            <StackPanel Margin="8">
+                <TextBlock Text="{Binding About.Version}" />
+                <TextBlock Text="{Binding About.Author}" />
+                <TextBlock Text="{Binding About.Website}" />
+                <TextBlock Text="{Binding About.Description}" />
+                <TextBlock Text="{Binding About.License}" />
+                <TextBlock Text="{Binding About.RepositoryUrl}" />
+            </StackPanel>
         </TabItem>
     </TabControl>
 

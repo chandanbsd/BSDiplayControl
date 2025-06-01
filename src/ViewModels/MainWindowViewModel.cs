@@ -9,23 +9,24 @@ public partial class MainWindowViewModel : ViewModelBase
     private IDisplayService _displayService;
 
 
+    public About About { get; } = new About();
 
     public string Greeting { get; } = "Welcome to Avalonia!";
 
-    private string _commandOutput;
-    public string CommandOutput
+    private string[] _commandOutput = Array.Empty<string>();
+    public string[] CommandOutput
     {
         get => _commandOutput;
         set => SetProperty(ref _commandOutput, value); // Assumes ViewModelBase implements SetProperty
     }
 
+    private string _fullDisplayInfo;
+
     public string FullDisplayInfo
     {
-        get => _commandOutput;
+        get => _fullDisplayInfo;
         set => SetProperty(ref _fullDisplayInfo, value); // Assumes ViewModelBase implements SetProperty
     }
-
-    private string _fullDisplayInfo;
 
     public MainWindowViewModel(
         IDisplayService displayService
@@ -37,11 +38,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public async void LoadCommandOutputAsync()
     {
-        (string res1, string res2) = await _displayService.GetDisplayInfo();
-        Console.WriteLine($"Command Output: {res1}");
-        Console.WriteLine($"Full Display Info: {res2}");
-
-        FullDisplayInfo = res2;
+        (string[] res1, string res2) = await _displayService.GetDisplayInfo();
+        FullDisplayInfo = res2 ?? "Failed to retrieve display info.";
         CommandOutput = res1;
     }
 }
