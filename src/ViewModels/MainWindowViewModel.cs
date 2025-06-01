@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using BSDDisplayControl.Services.Interfaces;
 
 namespace BSDisplayControl.ViewModels;
@@ -18,6 +19,14 @@ public partial class MainWindowViewModel : ViewModelBase
         set => SetProperty(ref _commandOutput, value); // Assumes ViewModelBase implements SetProperty
     }
 
+    public string FullDisplayInfo
+    {
+        get => _commandOutput;
+        set => SetProperty(ref _fullDisplayInfo, value); // Assumes ViewModelBase implements SetProperty
+    }
+
+    private string _fullDisplayInfo;
+
     public MainWindowViewModel(
         IDisplayService displayService
     )
@@ -28,6 +37,11 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public async void LoadCommandOutputAsync()
     {
-        CommandOutput = await _displayService.GetDisplayInfo();
+        (string res1, string res2) = await _displayService.GetDisplayInfo();
+        Console.WriteLine($"Command Output: {res1}");
+        Console.WriteLine($"Full Display Info: {res2}");
+
+        FullDisplayInfo = res2;
+        CommandOutput = res1;
     }
 }

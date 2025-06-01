@@ -9,6 +9,6 @@ namespace BSDDisplayControl.Services.Interfaces
     /// </summary>
     public interface IDisplayService
     {
-        public Task<string> GetDisplayInfo();
+        public Task<(string, string)> GetDisplayInfo();
     }
 }

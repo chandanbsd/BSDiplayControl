@@ -12,7 +12,7 @@ public class DisplayService : IDisplayService
     /// Gets the display information.
     /// </summary>
     /// <returns>A task that represents the asynchronous operation, containing the display information.</returns>
-    public async Task<string> GetDisplayInfo()
+    public async Task<(string, string)> GetDisplayInfo()
     {
 
         var scriptPath = System.IO.Path.Combine(
@@ -35,6 +35,7 @@ public class DisplayService : IDisplayService
 
         process.Start();
         string output = await process.StandardOutput.ReadToEndAsync();
+        var temp = output.Clone() as string;
         string error = await process.StandardError.ReadToEndAsync();
         await process.WaitForExitAsync();
 
@@ -61,7 +62,11 @@ public class DisplayService : IDisplayService
         string pythonOutput = await pythonProcess.StandardOutput.ReadToEndAsync();
         string pythonError = await pythonProcess.StandardError.ReadToEndAsync();
         await pythonProcess.WaitForExitAsync();
-        return string.IsNullOrWhiteSpace(pythonOutput) ? pythonError : pythonOutput;
+
+        var res1 = string.IsNullOrWhiteSpace(pythonOutput) ? pythonError : pythonOutput;
+        var res2 = string.IsNullOrWhiteSpace(temp) ? temp : error;
+        return (res1, temp);
+
     }
 }
 
